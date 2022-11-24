@@ -1,0 +1,251 @@
+openapi: 3.0.1
+info:
+  title: Patients Appointment
+  description: Patient Appointment
+  version: v1
+servers:
+  - url: http://localhost:8000
+    description: Local Dev Server
+
+paths:
+  /appointment/create:
+    post:
+      tags:
+        - appointment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AppointmentDt"
+      responses:
+        "201":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AppointmentDt"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          $ref: "#/components/responses/ResourceNotFoundError"
+        "422":
+          $ref: "#/components/responses/UnAcceptableInputs"
+
+  /appointment/getAll:
+    get:
+      tags:
+        - appointment
+      parameters:
+        - $ref: "#/components/parameters/limitParam"
+        - $ref: "#/components/parameters/directionParam"
+        - $ref: "#/components/parameters/sortByFieldParam"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AppointmentPagedResultDto"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          $ref: "#/components/responses/ResourceNotFoundError"
+
+  /appointment/get:
+    get:
+      tags:
+        - appointment
+      parameters:
+        - $ref: "#/components/parameters/idParam"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AppointmentDt"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          $ref: "#/components/responses/ResourceNotFoundError"
+        "422":
+          $ref: "#/components/responses/UnAcceptableInputs"
+
+  # /appointment/get/{id}:
+  #   get:
+  #     tags:
+  #       - appointment
+  #     description: get appointment by id
+  #     operationid: get appointment by id
+  #     parameters:
+  #       - name: id
+  #         in: query
+  #         description: Id
+  #         schema:
+  #           type: string
+  #     responses:
+  #       "200":
+  #         description: Success
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: "#/components/schemas/AppointmentDt"
+  #       "401":
+  #         $ref: "#/components/responses/UnauthorizedError"
+  #       "404":
+  #         $ref: "#/components/responses/ResourceNotFoundError"
+  #       "422":
+  #         $ref: "#/components/responses/UnAcceptableInputs"
+
+  /appointment/update/{id}:
+    put:
+      tags:
+        - appointment
+      parameters:
+        - name: id
+          in: query
+          description: Id
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AppointmentDt"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AppointmentDt"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          $ref: "#/components/responses/ResourceNotFoundError"
+        "422":
+          $ref: "#/components/responses/UnAcceptableInputs"
+
+  /appointment/delete:
+    delete:
+      tags:
+        - appointment
+      parameters:
+        - $ref: "#/components/parameters/idParam"
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          $ref: "#/components/responses/ResourceNotFoundError"
+        "422":
+          $ref: "#/components/responses/UnAcceptableInputs"
+components:
+  parameters:
+    idParam:
+      name: Id
+      in: query
+      required: true
+      schema:
+        type: string
+    limitParam:
+      name: Limit
+      in: query
+      schema:
+        type: integer
+        nullable: true
+    directionParam:
+      name: Direction
+      in: query
+      schema:
+        type: string
+        enum:
+          - asc
+          - desc
+        default: asc
+    sortByFieldParam:
+      name: SortByField
+      in: query
+      schema:
+        type: string
+        nullable: true
+  responses:
+    Success:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/MessageDto"
+    ResourceNotFoundError:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/MessageDto"
+    UnauthorizedError:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/MessageDto"
+    UnAcceptableInputs:
+      description: Invalid Inputs
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/MessageDto"
+  schemas:
+    MessageDto:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+    AppointmentPagedResultDto:
+      type: object
+      properties:
+        totalCount:
+          type: integer
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/AppointmentDt"
+    AppointmentDt:
+      type: object
+      properties:
+        id:
+          type: string
+        patientid:
+          type: string
+        doctorid:
+          type: string
+        doctorName:
+          type: string
+        doctorImage:
+          type: string
+        createdAt:
+          type: string
+          format: Timestamp
+        symptoms:
+          type: string
+        slotid:
+          type: string
+        slotTime:
+          type: string
+        appointmentDate:
+          type: string
+          format: Date
+        appointmentType:
+          type: number
+        appointmentStatus:
+          type: string
+      required:
+        - patientid
+        - appointmentDate
+        - slotid
+        - symptoms
+        - doctorid
+        - appointmentType
+        - slotTime

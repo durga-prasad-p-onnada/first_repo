@@ -1,0 +1,14 @@
+{
+  "id": "1",
+  "patientid": "sravani",
+  "doctorid": "p",
+  "doctorName": "phani",
+  "doctorImage": "Image",
+  "createdAt": "9:00",
+  "symptoms": "headache",
+  "slotid": "sasi",
+  "slotTime": "4:30",
+  "appointmentDate": "16-11-22",
+  "appointmentType": 54,
+  "appointmentStatus": "confirmed"
+}
